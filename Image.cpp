@@ -16,9 +16,10 @@ Image::Image(Image *image){
     allocateImageMem();
     for(int i=0;i<rows;i++){
         for(int j=0;j<cols;j++){
-        setPixel(i,j,image->image_array[i][j].red,image->image_array[i][j].green,image->image_array[i][j].blue);
+        setPixel(i,j,image->image_array[i][j].rgb[0],image->image_array[i][j].rgb[1],image->image_array[i][j].rgb[2]);
     }
 }
+
 }
 void Image::deleteImage(){
     //free 2d image array up
@@ -31,7 +32,7 @@ void Image::deleteImage(){
 
 void Image::imageRead(){ //read in new image
  ifstream file;
- file.open(imageName);
+ file.open(imageName,ios::binary | ios::in);
 
  if(!file.is_open()){
      cerr<< "Failed to open " << imageName << endl;
@@ -42,26 +43,50 @@ void Image::imageRead(){ //read in new image
  //allocate memory for the image
  allocateImageMem();
  //create image
-
- for(int i=0;i<rows;i++){
-    for(int j=0;j<cols;j++){
-        file >> image_array[i][j].red >>image_array[i][j].green>>image_array[i][j].blue;
+ string input;
+ int max=rows*cols*3;
+ int count=0;
+ int current_row=0;
+ int current_col=0;
+ int current_color=0;
+ 
+ unsigned char c;
+ file>>noskipws;
+ file >>c; //skip \n after size
+ while(count<max){
+    
+   
+   
+    file>>c;
+ 
+    //cout <<c;
+    image_array[current_row][current_col].rgb[current_color]=c;
+    //cout << image_array[current_row][current_col].rgb[current_color];
+    if(current_color==2)current_col++;
+    if(current_col==cols){
+        current_col=0;
+        current_row++;
     }
+    current_color=(current_color+ 1) %3;
+    count++;
+
 }
+   
     file.close();
 
 }
-int * Image::getPixel(int row, int col){
-    int *retArray= new int[3];
-    retArray[0]=image_array[row][col].red;
-    retArray[1]=image_array[row][col].green;
-    retArray[2]=image_array[row][col].blue;
+
+unsigned char * Image::getPixel(int row, int col){
+    unsigned char *retArray= new unsigned char[3];
+    retArray[0]=image_array[row][col].rgb[0];
+    retArray[1]=image_array[row][col].rgb[1];
+    retArray[2]=image_array[row][col].rgb[2];
     return retArray;
 }
-void Image::setPixel(int row,int col,int r,int g,int b){
-    image_array[row][col].red=r;
-    image_array[row][col].green=g;
-    image_array[row][col].blue=b;
+void Image::setPixel(int row,int col,unsigned char r,unsigned char g, unsigned char b){
+    image_array[row][col].rgb[0]=r;
+    image_array[row][col].rgb[1]=g;
+    image_array[row][col].rgb[2]=b;
 
-}
+} 
 

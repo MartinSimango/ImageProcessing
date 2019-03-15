@@ -7,9 +7,7 @@ using namespace std;
 
 
 struct Pixel {
-    int red;
-    int blue;
-    int green;
+    unsigned char rgb[3];
 };
 
  class Image{
@@ -47,9 +45,8 @@ struct Pixel {
      void setImageFormat(string format){this->format=format;}
      void setCols(int cols){this->cols=cols;}
      void setRows(int rows){this->rows=rows;}
-     void setPixel(int row,int col,int r,int g,int b);
-   
-     int* getPixel(int row,int col); //return pixel rgb colors
+     void setPixel(int row,int col,unsigned char r,unsigned char g,unsigned char b);
+     unsigned char* getPixel(int row,int col); //return pixel rgb colors
     
 }; 
  

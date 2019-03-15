@@ -8,7 +8,7 @@ class ImageProcess
 {
 private:
     /* data */
-    Image *image=NULL; 
+    Image *image; 
     void imageRead(string imageName); //read in the image
   
 public:
