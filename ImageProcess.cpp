@@ -3,7 +3,7 @@
  
 
 
-Image* ImageProcess::greyScaleChannel(enum Channel channel){
+Image* ImageProcess::grayScaleChannel(enum Channel channel){
   
   string colors[]= {"RED","GREEN","BLUE"};
 
@@ -15,10 +15,9 @@ Image* ImageProcess::greyScaleChannel(enum Channel channel){
     for(int j=0;j<image->getCols();j++){
        
         unsigned char * rgb =image->getPixel(i,j);
-        //cout << rgb[channel]<<rgb[channel]<<rgb[channel];
-        unsigned char greyC= rgb[channel];
+        unsigned char grayC= rgb[channel];
         
-        retImage->setPixel(i,j,greyC,greyC,greyC);
+        retImage->setPixel(i,j,grayC,grayC,grayC);
         delete  [] rgb;
     }
     
@@ -27,9 +26,48 @@ Image* ImageProcess::greyScaleChannel(enum Channel channel){
     return retImage;
 }
 
-void ImageProcess::createImageFile(Image* im) const{//create in image file from Image
+Image * ImageProcess::grayScaleAverage(){
+    string greyImageName= "averageGrey" +image->getImageName();
+    Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getRows(),image->getCols(),image->getSize());
+    for(int i=0;i<image->getRows();i++){  //divide by 3 as we are going through pixel by pixel and not color by color
+    for(int j=0;j<image->getCols();j++){
+       
+        unsigned char * rgb =image->getPixel(i,j);
+        unsigned char average = (unsigned char) (((int)rgb[0]+(int)rgb[1]+(int)rgb[2])/3);
+        retImage->setPixel(i,j,average,average,average);
+        delete  [] rgb;
+    }
+    
+}
+   
+    return retImage;
+
+
+}
+
+Image * ImageProcess::grayScaleWeightedAverage(){
+    string greyImageName= "weightedGrey" +image->getImageName();
+    Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getRows(),image->getCols(),image->getSize());
+    for(int i=0;i<image->getRows();i++){  //divide by 3 as we are going through pixel by pixel and not color by color
+    for(int j=0;j<image->getCols();j++){
+       
+        unsigned char * rgb =image->getPixel(i,j);
+        int gray= 0.3*(int)rgb[0]+0.59*(int)rgb[1]+0.11*(int)rgb[2];
+        retImage->setPixel(i,j,gray,gray,gray);
+        delete  [] rgb;
+    }
+    
+}
+   
+    return retImage;
+
+
+}
+
+
+void ImageProcess::createImageFile(Image* im,string filename) const{//create in image file from Image
     ofstream file;
-    file.open(im->getImageName(),ios::binary|ios::out);
+    file.open(filename,ios::binary|ios::out);
      if(!file.is_open()){
         cerr<< "Failed to open " << im->getImageName()<< endl;
         exit(1);
