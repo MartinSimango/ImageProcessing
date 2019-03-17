@@ -1,22 +1,30 @@
 #include "ImageProcess.h"
 
 
+using namespace mycv;
+
 int main(int argc, char *argv[]){
      
 	 //GrayScale 
-	ImageProcess image(argv[1]);
+	Image *image =  imageRead(argv[1]);
+	Image *grayC;
 	//single channel
-	Image* greyC=image.grayScaleChannel((Channel)atoi(argv[2]));
-	image.createImageFile(greyC,greyC->getImageName());
-	// average grayScale
-	greyC= image.grayScaleAverage();
-	image.createImageFile(greyC,greyC->getImageName());
+	grayC = grayScaleChannel(image,(Channel)(atoi(argv[2])));
+	cout << "Creating " << grayC->getImageName() <<endl;
+	createImageFile(grayC,grayC->getImageName());
+	
+    // average grayScale
+	grayC=  grayScaleAverage(image);
+	cout << "Creating " << grayC->getImageName() <<endl;
+	createImageFile(grayC,grayC->getImageName());
 	//weighted average
-	greyC= image.grayScaleWeightedAverage();
-	image.createImageFile(greyC,greyC->getImageName());
+	grayC= grayScaleWeightedAverage(image);
+	cout << "Creating " << grayC->getImageName() <<endl;
+	createImageFile(grayC,grayC->getImageName());
 
 
 	//Scaling
+
 	
 
 

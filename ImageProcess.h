@@ -3,32 +3,23 @@
 #include "Image.h"
 
 
-enum Channel {RED_CHANNEL,GREEN_CHANNEL,BLUE_CHANNEL};
-class ImageProcess
-{
-private:
-    /* data */
-    Image *image; 
-    void imageRead(string imageName); //read in the image
-  
-public:
 
-    //contructors
-    ImageProcess(string imageName) { image= new Image(imageName);};
-    //destructors
-    ~ImageProcess(){ }; 
-     
-    Image* getImage(){return image; };
+
+namespace mycv{
     
+    enum Channel {RED_CHANNEL,GREEN_CHANNEL,BLUE_CHANNEL};
+
+    Image * imageRead(string imageName); //read in the image
+
 
     //GrayScaling
-    Image* grayScaleChannel(enum Channel channel); 
-    Image * grayScaleAverage();
-    Image * grayScaleWeightedAverage();
+    Image* grayScaleChannel(Image* image,enum Channel channel); 
+    Image * grayScaleAverage(Image *image);
+    Image * grayScaleWeightedAverage(Image *image);
 
     //Scaling 
-    Image * scaleNearestNeighbour(int scaleFactor); //enter scaling factor in %
+    Image * scaleNearestNeighbour(Image *image,int scaleFactor); //enter scaling factor in %
     
-    void createImageFile(Image* im,string filename) const;//create in image file from Image
+    void createImageFile(Image* im,string filename);//create in image file from Image
 
 };

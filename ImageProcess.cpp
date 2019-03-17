@@ -2,12 +2,16 @@
 
  
 
+Image * mycv::imageRead(string imageName){
+ 
+ return new Image(imageName);
 
-Image* ImageProcess::grayScaleChannel(enum Channel channel){
+}
+Image* mycv::grayScaleChannel(Image *image,enum Channel channel){
   
   string colors[]= {"RED","GREEN","BLUE"};
 
-  string greyImageName= colors[channel] +image->getImageName();
+  string greyImageName= colors[channel] + image->getImageName();
  //  cout << image->getImageArray()[i][j].rgb[0] << " " <<image->getImageArray()[i][j].rgb[1] << image->getImageArray()[i][j].rgb[2]<<" ";
   Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getRows(),image->getCols(),image->getSize());
 
@@ -26,7 +30,7 @@ Image* ImageProcess::grayScaleChannel(enum Channel channel){
     return retImage;
 }
 
-Image * ImageProcess::grayScaleAverage(){
+Image * mycv::grayScaleAverage(Image *image){
     string greyImageName= "averageGrey" +image->getImageName();
     Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getRows(),image->getCols(),image->getSize());
     for(int i=0;i<image->getRows();i++){  //divide by 3 as we are going through pixel by pixel and not color by color
@@ -45,7 +49,7 @@ Image * ImageProcess::grayScaleAverage(){
 
 }
 
-Image * ImageProcess::grayScaleWeightedAverage(){
+Image * mycv::grayScaleWeightedAverage(Image *image){
     string greyImageName= "weightedGrey" +image->getImageName();
     Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getRows(),image->getCols(),image->getSize());
     for(int i=0;i<image->getRows();i++){  //divide by 3 as we are going through pixel by pixel and not color by color
@@ -65,7 +69,7 @@ Image * ImageProcess::grayScaleWeightedAverage(){
 }
 
 
-void ImageProcess::createImageFile(Image* im,string filename) const{//create in image file from Image
+void mycv::createImageFile(Image* im,string filename) {//create in image file from Image
     ofstream file;
     file.open(filename,ios::binary|ios::out);
      if(!file.is_open()){
