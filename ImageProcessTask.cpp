@@ -1,4 +1,4 @@
-#include "ImageProcess.h"
+#include "MyOpenCV.h"
 
 
 using namespace mycv;
