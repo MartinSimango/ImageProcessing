@@ -14,12 +14,10 @@ namespace mycv{
     string colors[]= {"RED","GREEN","BLUE"};
 
     string greyImageName= colors[channel] + image->getImageName();
-    //  cout << image->getImageArray()[i][j].rgb[0] << " " <<image->getImageArray()[i][j].rgb[1] << image->getImageArray()[i][j].rgb[2]<<" ";
-    Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getRows(),image->getCols(),image->getSize());
+    Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getHeight(),image->getWidth(),image->getSize());
 
-    for(int i=0;i<image->getRows();i++){  //divide by 3 as we are going through pixel by pixel and not color by color
-        for(int j=0;j<image->getCols();j++){
-        
+    for(int i=0;i<image->getHeight();i++){ 
+            for(int j=0;j<image->getWidth();j++){
             unsigned char * rgb =image->getPixel(i,j);
             unsigned char grayC= rgb[channel];
             
@@ -34,14 +32,14 @@ namespace mycv{
 
     Image * grayScaleAverage(Image *image){
         string greyImageName= "averageGrey" +image->getImageName();
-        Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getRows(),image->getCols(),image->getSize());
-        for(int i=0;i<image->getRows();i++){  //divide by 3 as we are going through pixel by pixel and not color by color
-        for(int j=0;j<image->getCols();j++){
+        Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getHeight(),image->getWidth(),image->getSize());
+        for(int i=0;i<image->getHeight();i++){  
+            for(int j=0;j<image->getWidth();j++){
         
-            unsigned char * rgb =image->getPixel(i,j);
-            unsigned char average = (unsigned char) (((int)rgb[0]+(int)rgb[1]+(int)rgb[2])/3);
-            retImage->setPixel(i,j,average,average,average);
-            delete  [] rgb;
+                unsigned char * rgb =image->getPixel(i,j);
+                unsigned char average = (unsigned char) (((int)rgb[0]+(int)rgb[1]+(int)rgb[2])/3);
+                retImage->setPixel(i,j,average,average,average);
+                delete  [] rgb;
         }
         
     }
@@ -53,18 +51,56 @@ namespace mycv{
 
     Image * grayScaleWeightedAverage(Image *image){
         string greyImageName= "weightedGrey" +image->getImageName();
-        Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getRows(),image->getCols(),image->getSize());
-        for(int i=0;i<image->getRows();i++){  //divide by 3 as we are going through pixel by pixel and not color by color
-        for(int j=0;j<image->getCols();j++){
-        
-            unsigned char * rgb =image->getPixel(i,j);
-            int gray= 0.3*(int)rgb[0]+0.59*(int)rgb[1]+0.11*(int)rgb[2];
-            retImage->setPixel(i,j,gray,gray,gray);
-            delete  [] rgb;
+        Image *retImage = new Image(greyImageName,image->getImageFormat(),image->getHeight(),image->getWidth(),image->getSize());
+        for(int i=0;i<image->getHeight();i++){ 
+            for(int j=0;j<image->getWidth();j++){
+                unsigned char * rgb =image->getPixel(i,j);
+                int gray= 0.3*(int)rgb[0]+0.59*(int)rgb[1]+0.11*(int)rgb[2];
+                retImage->setPixel(i,j,gray,gray,gray);
+                delete  [] rgb;
         }
         
     }
     
+        return retImage;
+
+
+    }
+    Image * scaleNearestNeighbour(Image *image,Size * newSize){ //enter  new size
+        string newImageName = "ResizeNearest"+image->getImageName(); 
+        Image *retImage = new Image(newImageName,image->getImageFormat(),newSize->height,newSize->width,image->getSize());
+ 
+        int x_ratio = (int)((image->getWidth()<<16)/newSize->width) +1;
+        int y_ratio = (int)((image->getHeight()<<16)/newSize->height) +1;
+    
+        int x2, y2 ;
+    
+        for(int i=0;i<retImage->getHeight();i++){
+            for(int j=0;j<retImage->getWidth();j++){
+                 x2 = ((j*x_ratio)>>16);
+                 y2 = ((i*y_ratio)>>16);
+                
+                 unsigned char * rgb = image->getPixel(y2,x2);
+                 retImage->setPixel(i,j,rgb[0],rgb[1],rgb[2]);
+                delete [] rgb; //free memoery
+                //insert code here
+            }
+        }
+
+        return retImage;
+
+
+    }
+    Image * scaleInterpolation(Image *image,Size * newSize){ //enter  new size
+        string newImageName = "ResizeInterpolation"+image->getImageName(); 
+        Image *retImage = new Image(newImageName,image->getImageFormat(),newSize->height,newSize->width,image->getSize());
+        for(int i=0;i<retImage->getHeight();i++){
+            for(int j=0;j<retImage->getWidth();j++){
+
+                //insert code here
+            }
+        }
+
         return retImage;
 
 
@@ -80,12 +116,10 @@ namespace mycv{
     }
 
 
-        file << im->getImageFormat() <<endl <<im->getCols() <<" " <<im->getRows() <<"\n" <<im->getSize() << endl;
+        file << im->getImageFormat() <<endl <<im->getWidth() <<" " <<im->getHeight() <<"\n" <<im->getSize() << endl;
 
-        for(int i=0;i<im->getRows();i++){
-            for(int j=0;j<im->getCols();j++){
-                
-                // file << (int)im->getImageArray()[i][j].rgb[0]<<" "<<(int) im->getImageArray()[i][j].rgb[1]<<" "<<(int)im->getImageArray()[i][j].rgb[2]<<" " ;
+        for(int i=0;i<im->getHeight();i++){
+            for(int j=0;j<im->getWidth();j++){
                 unsigned char * rgb =im->getPixel(i,j); 
                 file << rgb[0]<<rgb[1]<<rgb[2];
 
@@ -93,7 +127,6 @@ namespace mycv{
             }
         }
 
-
-
     }
+
 }

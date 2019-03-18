@@ -10,7 +10,10 @@ namespace mycv{
     struct Pixel {
         unsigned char rgb[3];
     };
-
+    typedef struct Size{
+        int width,height; 
+        Size(int width,int height): width(width),height(height){}
+    } Size;
     class Image{
         private:
         string imageName,format;
@@ -36,16 +39,16 @@ namespace mycv{
         //getter methods
         const string getImageName()const{return imageName;}
         const string getImageFormat()const{return format;}
-        const int getCols() const {return cols;}
-        const int getRows() const {return rows;}
+        const int getWidth() const {return cols;}
+        const int getHeight() const {return rows;}
         const int getSize() const {return size;}
         const Pixel** getImageArray() { return (const Pixel**)image_array;};
         
         //setters
         void setImageName(string imageName){this->imageName=imageName;}
         void setImageFormat(string format){this->format=format;}
-        void setCols(int cols){this->cols=cols;}
-        void setRows(int rows){this->rows=rows;}
+        void setWidth(int cols){this->cols=cols;}
+        void setHeight(int rows){this->rows=rows;}
         void setPixel(int row,int col,unsigned char r,unsigned char g,unsigned char b);
         unsigned char* getPixel(int row,int col); //return pixel rgb colors
         
