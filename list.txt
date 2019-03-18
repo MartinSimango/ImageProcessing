@@ -1,0 +1,16 @@
+https://www.ifi.uzh.ch/dam/jcr:5759a719-55db-4930-8051-4cc534f812b1/VO_Part_I_Scaramuzza.pdf
+
+https://en.wikipedia.org/wiki/Point_set_registration
+
+https://pdfs.semanticscholar.org/e9c1/3fb1fc37abc4c2fb670a3cdb69228928354b.pdf
+
+http://mi.eng.cam.ac.uk/~cipolla/publications/inproceedings/2004-VSMM-localisation.pdf
+
+https://www-robotics.jpl.nasa.gov/publications/Andrew_Howard/howard_iros08_visodom.pdf
+
+https://www.researchgate.net/profile/Luis_Goncalves6/publication/221073651_The_vSLAM_Algorithm_for_Robust_Localization_and_Mapping/links/00b49522a86d3c7e21000000/The-vSLAM-Algorithm-for-Robust-Localization-and-Mapping.pdf
+
+
+https://trs.jpl.nasa.gov/bitstream/handle/2014/37431/05-0761.pdf?sequence=1&isAllowed=y
+
+http://www.robots.ox.ac.uk:5000/~lav/Publications/williams_reid_icra2010/williams_reid_icra2010.pdf
