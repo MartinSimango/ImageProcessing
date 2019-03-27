@@ -9,6 +9,8 @@ namespace mycv{
     return new Image(imageName);
 
     }
+
+    //**********************GRAYSCALE********************************
     Image* grayScaleChannel(Image *image,enum Channel channel){
     
     string colors[]= {"RED","GREEN","BLUE"};
@@ -24,9 +26,7 @@ namespace mycv{
             retImage->setPixel(i,j,grayC,grayC,grayC);
             delete  [] rgb;
         }
-        
     }
-    
         return retImage;
     }
 
@@ -43,9 +43,7 @@ namespace mycv{
         }
         
     }
-    
         return retImage;
-
 
     }
 
@@ -64,8 +62,9 @@ namespace mycv{
     
         return retImage;
 
-
     }
+
+     //**********************SCALING********************************
     Image * scaleNearestNeighbour(Image *image,Size * newSize){ //enter  new size
         string newImageName = "ResizeNearest"+image->getImageName(); 
         Image *retImage = new Image(newImageName,image->getImageFormat(),newSize->height,newSize->width,image->getSize());
@@ -82,7 +81,7 @@ namespace mycv{
                 
                  unsigned char * rgb = image->getPixel(y2,x2);
                  retImage->setPixel(i,j,rgb[0],rgb[1],rgb[2]);
-                delete [] rgb; //free memoery
+                 delete [] rgb; //free memoery
                 //insert code here
             }
         }
@@ -93,20 +92,48 @@ namespace mycv{
     }
     Image * scaleInterpolation(Image *image,Size * newSize){ //enter  new size
         string newImageName = "ResizeInterpolation"+image->getImageName(); 
+        //create empty image
         Image *retImage = new Image(newImageName,image->getImageFormat(),newSize->height,newSize->width,image->getSize());
+        
+        int x,y;
+        float x_ratio = ((float)(image->getWidth()-1))/newSize->width ;
+        //the -1 takes care of the egde case of x+1 going over the array bounds
+        float y_ratio = ((float)(image->getHeight()-1))/newSize->height;
+
+        float x_diff, y_diff, blue, red, green ;
+        int offset = 0 ;
         for(int i=0;i<retImage->getHeight();i++){
             for(int j=0;j<retImage->getWidth();j++){
+                x= (int)(x_ratio *j);
+                y= (int)(y_ratio *i);
+                x_diff=(x_ratio*j)-x; //decimal difference e.g 5.6 -5=0.6
+                y_diff = (y_ratio*i) -y;
+                
+                //get four neighbour
+                unsigned char* a = image->getPixel(y,x);
+                unsigned char* b = image->getPixel(y,x+1);
+                unsigned char* c = image->getPixel(y+1,x);
+                unsigned char* d = image->getPixel(y+1,x+1);
+             
+                red= ((int)a[0])*(1-x_diff)*(1-y_diff) + ((int)b[0])*(x_diff)*(1-y_diff) + ((int)c[0])*(y_diff)*(1-x_diff) +((int)d[0])*(x_diff*y_diff);
+                green= ((int)a[1])*(1-x_diff)*(1-y_diff) + ((int)b[1])*(x_diff)*(1-y_diff) + ((int)c[1])*(y_diff)*(1-x_diff)+((int)d[1])*(x_diff*y_diff);
+                blue= ((int)a[2])*(1-x_diff)*(1-y_diff) + ((int)b[2])*(x_diff)*(1-y_diff) + ((int)c[2])*(y_diff)*(1-x_diff) + ((int)d[2])*(x_diff*y_diff);
+                
+                
+                retImage->setPixel(i,j,(unsigned char)red,(unsigned char)green,(unsigned char)blue);
+                //free memory
+                delete [] a;
+                delete [] b;
+                delete [] c;
+                delete [] d;
 
-                //insert code here
             }
         }
-
         return retImage;
 
 
     }
-
-
+ //**********************ROTATION********************************
     void createImageFile(Image* im,string filename) {//create in image file from Image
         ofstream file;
         file.open(filename,ios::binary|ios::out);
@@ -115,14 +142,11 @@ namespace mycv{
             exit(1);
     }
 
-
         file << im->getImageFormat() <<endl <<im->getWidth() <<" " <<im->getHeight() <<"\n" <<im->getSize() << endl;
-
         for(int i=0;i<im->getHeight();i++){
             for(int j=0;j<im->getWidth();j++){
                 unsigned char * rgb =im->getPixel(i,j); 
                 file << rgb[0]<<rgb[1]<<rgb[2];
-
         
             }
         }

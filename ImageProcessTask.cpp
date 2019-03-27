@@ -22,19 +22,22 @@ int main(int argc, char *argv[]){
 	cout << "Creating " << grayC->getImageName() <<endl;
 	createImageFile(grayC,grayC->getImageName());
 
-	delete image;
+	//delete image;
 
 	//Scaling
 	Image *scale;
+	int w= image->getWidth()*2;
+	int h= image->getHeight()*2;
 	//nearest neighbour
-
- 	scale= scaleNearestNeighbour(image, new Size(400,500));
+	
+ 	scale= scaleNearestNeighbour(image, new Size(w,h));
 	cout << "Creating " << scale->getImageName() <<endl;
 	createImageFile(scale,scale->getImageName());
-	//interpolation 
-	//scale = scaleInterpolation(image,new Size(100,100));
-	//cout << "Creating " << scale->getImageName() <<endl;
-	//createImageFile(scale,scale->getImageName());
+	
+	//scaling interpolation 
+	scale = scaleInterpolation(image,new Size(w,h));
+     cout << "Creating " << scale->getImageName() <<endl;
+	createImageFile(scale,scale->getImageName());
 
 
 

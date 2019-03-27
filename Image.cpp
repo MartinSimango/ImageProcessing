@@ -57,10 +57,7 @@ namespace mycv
     file >>c; //skip \n after size
     while(count<max){
         
-    
-    
         file>>c;
-    
         //cout <<c;
         image_array[current_row][current_col].rgb[current_color]=c;
         //cout << image_array[current_row][current_col].rgb[current_color];
