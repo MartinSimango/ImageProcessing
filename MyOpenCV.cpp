@@ -114,13 +114,14 @@ namespace mycv{
                 unsigned char* b = image->getPixel(y,x+1);
                 unsigned char* c = image->getPixel(y+1,x);
                 unsigned char* d = image->getPixel(y+1,x+1);
-             
-                red= ((int)a[0])*(1-x_diff)*(1-y_diff) + ((int)b[0])*(x_diff)*(1-y_diff) + ((int)c[0])*(y_diff)*(1-x_diff) +((int)d[0])*(x_diff*y_diff);
-                green= ((int)a[1])*(1-x_diff)*(1-y_diff) + ((int)b[1])*(x_diff)*(1-y_diff) + ((int)c[1])*(y_diff)*(1-x_diff)+((int)d[1])*(x_diff*y_diff);
-                blue= ((int)a[2])*(1-x_diff)*(1-y_diff) + ((int)b[2])*(x_diff)*(1-y_diff) + ((int)c[2])*(y_diff)*(1-x_diff) + ((int)d[2])*(x_diff*y_diff);
+
+                //apply bilinear intepolation
+                red= a[0]*(1-x_diff)*(1-y_diff) + b[0]*(x_diff)*(1-y_diff) + c[0]*(y_diff)*(1-x_diff) +d[0]*(x_diff*y_diff);
+                green= a[1]*(1-x_diff)*(1-y_diff) + b[1]*(x_diff)*(1-y_diff) + c[1]*(y_diff)*(1-x_diff)+d[1]*(x_diff*y_diff);
+                blue= a[2]*(1-x_diff)*(1-y_diff) + b[2]*(x_diff)*(1-y_diff) + c[2]*(y_diff)*(1-x_diff) + d[2]*(x_diff*y_diff);
                 
                 
-                retImage->setPixel(i,j,(unsigned char)red,(unsigned char)green,(unsigned char)blue);
+                retImage->setPixel(i,j,red,green,blue); //compiler will implicitly cast int to unsinged char
                 //free memory
                 delete [] a;
                 delete [] b;
@@ -147,6 +148,9 @@ namespace mycv{
             for(int j=0;j<im->getWidth();j++){
                 unsigned char * rgb =im->getPixel(i,j); 
                 file << rgb[0]<<rgb[1]<<rgb[2];
+                //free memory
+                delete [] rgb;
+
         
             }
         }
