@@ -20,7 +20,7 @@ namespace mycv{
 
     //Rotation
     
-    //  todo
+    Image * rotate(Image *image,double angle ,int about_x=0, int about_y=0);
 
     //Background subtraction
 
@@ -28,5 +28,7 @@ namespace mycv{
 
     //Create an image;
     void createImageFile(Image* im,string filename);//create in image file from Image
+    //display image
+    void imageShow(string windowName, Image * image);
 
 };

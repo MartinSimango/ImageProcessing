@@ -1,6 +1,8 @@
 #include "MyOpenCV.h"
+#include <opencv4/opencv2/opencv.hpp>
+#include <cmath>
 
- 
+using namespace std;
 namespace mycv{
 
 
@@ -135,6 +137,25 @@ namespace mycv{
 
     }
  //**********************ROTATION********************************
+     Image * rotate(Image *image,double angle ,int about_x, int about_y){
+         //rotate about about_x and about_y
+         string newImageName = "Rotate" + image->getImageName();
+         //int max_num = max();
+         int newWidth,  newHeight;
+         //The rotation matrix
+         // [ cos(𝜃) -sin(𝜃) 𝑥⋅cos(𝜃) +𝑦⋅sin(𝜃)+𝑥] 
+         // [ sin(𝜃) cos(𝜃) −𝑥⋅sin(𝜃) −𝑦⋅cos(𝜃)+𝑦]
+         
+         Image *retImage = new Image(newImageName,image->getImageFormat(),newWidth,newHeight,image->getSize());
+         for(int i=0;i< retImage->getHeight();i++){
+             for(int j=0;j<retImage->getWidth();j++){
+
+             }
+         }
+         return retImage;
+     }
+    
+    
     void createImageFile(Image* im,string filename) {//create in image file from Image
         ofstream file;
         file.open(filename,ios::binary|ios::out);
@@ -155,6 +176,14 @@ namespace mycv{
             }
         }
 
+    }
+    //use open opencv to display image
+    void imageShow(string windowName, Image * image){
+       //  cv::Mat im= imread(image->getImageName(),cv::IMREAD_COLOR);
+        // cv::imshow(windowName,im);
+        // cv::waitKey(0);
+        // cv::destroyAllWindows();
+        
     }
 
 }

@@ -39,6 +39,9 @@ int main(int argc, char *argv[]){
      cout << "Creating " << scale->getImageName() <<endl;
 	createImageFile(scale,scale->getImageName());
 
+	imageShow("bottle",scale);
+
+
 
 
 	

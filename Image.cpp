@@ -88,4 +88,5 @@ namespace mycv
         image_array[row][col].rgb[2]=b;
 
     } 
+    
 }
