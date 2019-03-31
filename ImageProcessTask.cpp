@@ -1,5 +1,5 @@
 #include "MyOpenCV.h"
-
+#include <string>
 
 using namespace mycv;
 
@@ -7,6 +7,7 @@ int main(int argc, char *argv[]){
      
 	 //GrayScale 
 	Image *image =  imageRead(argv[1]);
+	CVImageShow(image->getImageName(),image);
 	Image *grayC;
 	//single channel
 	grayC = grayScaleChannel(image,(Channel)(atoi(argv[2])));
@@ -39,7 +40,11 @@ int main(int argc, char *argv[]){
      cout << "Creating " << scale->getImageName() <<endl;
 	createImageFile(scale,scale->getImageName());
 
-	imageShow("bottle",scale);
+	string sz= "("+to_string(scale->getWidth())+"x"+to_string(scale->getHeight())+")";
+	CVImageShow(scale->getImageName()+sz,scale);
+	    cv::waitKey(0);
+         cv::destroyAllWindows();
+        
 
 
 

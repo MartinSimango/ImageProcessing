@@ -1,6 +1,5 @@
 #include "MyOpenCV.h"
-#include <opencv4/opencv2/opencv.hpp>
-#include <cmath>
+
 
 using namespace std;
 namespace mycv{
@@ -178,12 +177,10 @@ namespace mycv{
 
     }
     //use open opencv to display image
-    void imageShow(string windowName, Image * image){
-       //  cv::Mat im= imread(image->getImageName(),cv::IMREAD_COLOR);
-        // cv::imshow(windowName,im);
-        // cv::waitKey(0);
-        // cv::destroyAllWindows();
-        
+    void CVImageShow(string windowName, Image * image){
+         cv::Mat im= imread(image->getImageName(),cv::IMREAD_COLOR);
+         cv::imshow(windowName,im);
+     
     }
 
 }
