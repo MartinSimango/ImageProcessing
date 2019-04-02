@@ -1,55 +1,82 @@
 #include "MyOpenCV.h"
+#include <opencv4/opencv2/opencv.hpp>
 #include <string>
 
 using namespace mycv;
 
+void showImage(Image * image);
+void createFile(Image *image);
+
 int main(int argc, char *argv[]){
      
-	 //GrayScale 
+	
 	Image *image =  imageRead(argv[1]);
-	CVImageShow(image->getImageName(),image);
-	Image *grayC;
+	showImage(image);
+	
+	
+	//*********************************GrayScale******************************
+	/*Image *grayC;
 	//single channel
 	grayC = grayScaleChannel(image,(Channel)(atoi(argv[2])));
-	cout << "Creating " << grayC->getImageName() <<endl;
-	createImageFile(grayC,grayC->getImageName());
-	
+	createFile(grayC);
+	showImage(grayC);
     // average grayScale
-	grayC=  grayScaleAverage(image);
-	cout << "Creating " << grayC->getImageName() <<endl;
-	createImageFile(grayC,grayC->getImageName());
+	grayC= grayScaleAverage(image);
+	createFile(grayC);
+	showImage(grayC);	
 	//weighted average
 	grayC= grayScaleWeightedAverage(image);
-	cout << "Creating " << grayC->getImageName() <<endl;
-	createImageFile(grayC,grayC->getImageName());
+	createFile(grayC);
+	showImage(grayC);	
+	
 
-	//delete image;
+	cv::waitKey(0);
+	cv::destroyAllWindows();
 
-	//Scaling
+	
+
+	//*********************************Scaling******************************
+	showImage(image);
 	Image *scale;
 	int w= image->getWidth()*2;
 	int h= image->getHeight()*2;
 	//nearest neighbour
 	
  	scale= scaleNearestNeighbour(image, new Size(w,h));
-	cout << "Creating " << scale->getImageName() <<endl;
-	createImageFile(scale,scale->getImageName());
+	createFile(scale);
+	showImage(scale);	
 	
 	//scaling interpolation 
 	scale = scaleInterpolation(image,new Size(w,h));
-     cout << "Creating " << scale->getImageName() <<endl;
-	createImageFile(scale,scale->getImageName());
+    createFile(scale);
+	showImage(scale);	
+	*/
 
-	string sz= "("+to_string(scale->getWidth())+"x"+to_string(scale->getHeight())+")";
-	CVImageShow(scale->getImageName()+sz,scale);
-	    cv::waitKey(0);
-         cv::destroyAllWindows();
-        
-
-
-
+	//Rotation
+	Image * rotation= rotate(image,45);
+	createFile(rotation);
+	showImage(rotation);
 
 	
+	
+	cv::waitKey(0);
+	cv::destroyAllWindows();
+	
+	
+   
+	
+        
 
+	
+}
+void createFile(Image *image){
+	cout << "Creating " << image->getImageName() <<endl;
+	createImageFile(image,image->getImageName());
+	
+}
 
+void showImage(Image * image){
+	string windowName= image->getImageName() + "("+to_string(image->getWidth())+"x"+to_string(image->getHeight())+")";
+	cv::Mat im= imread(image->getImageName(),cv::IMREAD_COLOR);
+	cv::imshow(windowName,im);
 }

@@ -29,7 +29,7 @@ namespace mycv{
         //constructors
         Image(string imageName):imageName(imageName){ imageRead(); }
     
-        Image(string imageName,string format,int row,int col,int size):imageName(imageName),format(format),rows(row),cols(col),size(size){ allocateImageMem();}
+        Image(string imageName,string format,int height,int width,int size):imageName(imageName),format(format),rows(height),cols(width),size(size){ allocateImageMem();}
         
         //copy contructor
         Image(Image *image);

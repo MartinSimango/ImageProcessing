@@ -136,23 +136,75 @@ namespace mycv{
 
     }
  //**********************ROTATION********************************
-     Image * rotate(Image *image,double angle ,int about_x, int about_y){
+     Image * rotate(Image *image,double angle ,double about_x, double about_y){
          //rotate about about_x and about_y
-         string newImageName = "Rotate" + image->getImageName();
-         //int max_num = max();
-         int newWidth,  newHeight;
-         //The rotation matrix
-         // [ cos(𝜃) -sin(𝜃) 𝑥⋅cos(𝜃) +𝑦⋅sin(𝜃)+𝑥] 
-         // [ sin(𝜃) cos(𝜃) −𝑥⋅sin(𝜃) −𝑦⋅cos(𝜃)+𝑦]
+         string newImageName = "Rotate("+to_string(angle)+","+to_string(about_x)+","+to_string(about_y)+")" + image->getImageName();
+         double rads= angle* M_PI/180;
+        
+         //new image size after rotation
          
-         Image *retImage = new Image(newImageName,image->getImageFormat(),newWidth,newHeight,image->getSize());
-         for(int i=0;i< retImage->getHeight();i++){
-             for(int j=0;j<retImage->getWidth();j++){
+         //new image dimension
+         int newWidth = abs(image->getHeight()*sin(rads) +image->getWidth()*cos(rads));
+         int newHeight = abs(image->getWidth()*sin(rads)+ image->getHeight()*cos(rads));
 
+         //The rotation matrix
+         // [ cos(𝜃) -sin(𝜃) (-𝑥⋅cos(𝜃) +𝑦⋅sin(𝜃)+𝑥)] 
+         // [ sin(𝜃) cos(𝜃) (−𝑥⋅sin(𝜃) −𝑦⋅cos(𝜃)+𝑦)]
+         
+         //see where corners are adjusted to
+         int leftCornerX= - about_x*cos(rads)+about_y*sin(rads)+about_x;
+         int leftCornerY= - about_x*sin(rads)-about_y*cos(rads)+about_y;
+         int rightCornerX = -image->getWidth()*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x;
+         int rightCornerY =  image->getWidth()*cos(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y;
+          
+         int minY=0;
+         int minYPair=1000000;
+         int minX=0;
+         int minXPair=1000000;
+         int xi , xj;
+         int yi, yj;
+        
+         cout << newWidth << "X" <<newHeight<<endl;
+         Image *retImage = new Image(newImageName,image->getImageFormat(),newHeight,newWidth,image->getSize());
+         for(int i=0;i< image->getHeight();i++){
+             for(int j=0;j<image->getWidth();j++){
+                 int newX= i*cos(rads)-j*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x-rightCornerX;
+                 int newY= i*sin(rads)+j*cos(rads) - about_x*sin(rads)-about_y*cos(rads)+about_y-leftCornerY;
+                 
+                 if(newX<minX){
+                    minX= newX;
+                    minXPair= newY;
+                    xi=i;
+                    xj=j;
+                 }
+                 if(newY<minY){
+                    minY= newY;
+                    minYPair= newX;
+                    yi=i;
+                    yj=j;
+                 }
+                if(i==0)
+                 cout << "("<<i <<","<<j << ") becomes (" << newX <<","<<newY<<")"<<endl;
+                // newX= abs(newX);
+                 //newY= abs(newY);
+                 unsigned char * rgb =image->getPixel(i,j);
+              
+                 if(newX>=0 && newY>=0 && newX< retImage->getHeight() && newY<retImage->getWidth())
+                    retImage->setPixel(newX,newY,rgb[0],rgb[1],rgb[2]);
+             
+                 delete [] rgb;
              }
          }
+            cout << "MinX (" << xi<<","<<xj<<") gets mapped to ("<< minX<<","<<minXPair<<")"<<endl;
+            cout << "MinY (" << yi<<","<<yj<<") gets mapped to ("<< minYPair<<","<<minY<<")"<<endl;
+            cout << "("<<rightCornerX <<","<<rightCornerY << ") becomes (" <<leftCornerX <<","<<leftCornerY<<")"<<endl;
          return retImage;
      }
+    Image * rotate(Image *image,double angle ){
+
+        return rotate(image,angle,image->getWidth()/2,image->getHeight()/2);
+
+    }
     
     
     void createImageFile(Image* im,string filename) {//create in image file from Image
@@ -176,11 +228,6 @@ namespace mycv{
         }
 
     }
-    //use open opencv to display image
-    void CVImageShow(string windowName, Image * image){
-         cv::Mat im= imread(image->getImageName(),cv::IMREAD_COLOR);
-         cv::imshow(windowName,im);
-     
-    }
+    
 
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Image.h"
-#include <opencv4/opencv2/opencv.hpp>
 #include <cmath>
 
 namespace mycv{
@@ -22,7 +21,11 @@ namespace mycv{
 
     //Rotation
     
-    Image * rotate(Image *image,double angle ,int about_x=0, int about_y=0);
+    //rotate about middle of picture
+    Image * rotate(Image *image,double angle);
+
+    //rotate about any point
+    Image * rotate(Image *image,double angle ,double about_x, double about_y);
 
     //Background subtraction
 
@@ -30,7 +33,6 @@ namespace mycv{
 
     //Create an image;
     void createImageFile(Image* im,string filename);//create in image file from Image
-    //display image
-    void CVImageShow(string windowName, Image * image);
+ 
 
 };

@@ -7,6 +7,11 @@ namespace mycv
             for(int i=0;i<rows;i++){
             //allocate memory for each row
                 image_array[i] = new Pixel[cols];
+                for(int k=0;k<cols;k++){
+                    image_array[i][k].rgb[0]= (unsigned char) 0;
+                    image_array[i][k].rgb[1]=(unsigned char) 0;
+                    image_array[i][k].rgb[2]=(unsigned char) 0;
+                }
             }
         }
     Image::Image(Image *image){
