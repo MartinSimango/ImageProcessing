@@ -25,7 +25,7 @@ namespace mycv{
     Image * rotate(Image *image,double angle);
 
     //rotate about any point
-    Image * rotate(Image *image,double angle ,double about_x, double about_y);
+    Image * rotate(Image *image,double angle ,int about_x, int about_y);
 
     //Background subtraction
 

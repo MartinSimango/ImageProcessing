@@ -136,73 +136,112 @@ namespace mycv{
 
     }
  //**********************ROTATION********************************
-     Image * rotate(Image *image,double angle ,double about_x, double about_y){
+    int getMin(int val,int wh,int min){
+        if(val<wh && val>=0){
+            return min;
+        }
+        if(val<0 && abs(val)>abs(min)){   
+            return val;
+        }
+        
+        if(val>wh && abs(val-wh)>abs(min)){     
+            return val-(wh-1); //(wh-1 because computer starts counting at 0 so width or height only has 1 less indices e.g. 259 height =258 max value of height for array)
+        }
+        
+        return min;
+    }
+
+     Image * rotate(Image *image,double angle ,int about_x, int about_y){
          //rotate about about_x and about_y
+           
          string newImageName = "Rotate("+to_string(angle)+","+to_string(about_x)+","+to_string(about_y)+")" + image->getImageName();
          double rads= angle* M_PI/180;
         
          //new image size after rotation
          
          //new image dimension
-         int newWidth = abs(image->getHeight()*sin(rads) +image->getWidth()*cos(rads));
-         int newHeight = abs(image->getWidth()*sin(rads)+ image->getHeight()*cos(rads));
+        int newWidth = abs(image->getHeight()*sin(rads))+abs(image->getWidth()*cos(rads));
+        int newHeight = abs(image->getWidth()*sin(rads))+ abs(image->getHeight()*cos(rads));
 
          //The rotation matrix
          // [ cos(𝜃) -sin(𝜃) (-𝑥⋅cos(𝜃) +𝑦⋅sin(𝜃)+𝑥)] 
          // [ sin(𝜃) cos(𝜃) (−𝑥⋅sin(𝜃) −𝑦⋅cos(𝜃)+𝑦)]
          
-         //see where corners are adjusted to
-         int leftCornerX= - about_x*cos(rads)+about_y*sin(rads)+about_x;
-         int leftCornerY= - about_x*sin(rads)-about_y*cos(rads)+about_y;
-         int rightCornerX = -image->getWidth()*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x;
-         int rightCornerY =  image->getWidth()*cos(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y;
-          
-         int minY=0;
-         int minYPair=1000000;
-         int minX=0;
-         int minXPair=1000000;
-         int xi , xj;
-         int yi, yj;
+         //see check which corner is out of bounds
+         int minXCorner=0;
+         int minYCorner=0;
+
+         int topLeftCornerX= round(-about_x*cos(rads)+about_y*sin(rads)+about_x);
+         minXCorner= getMin(topLeftCornerX,newHeight,minXCorner);
+         int topLeftCornerY= round(-about_x*sin(rads)-about_y*cos(rads)+about_y);
+         minYCorner= getMin(topLeftCornerY,newWidth,minYCorner); 
+         
+         
+         int topRightCornerX = round(-(image->getWidth()-1)*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x);
+         minXCorner= getMin(topRightCornerX,newHeight,minXCorner);
+         int topRightCornerY =  round((image->getWidth()-1)*cos(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
+         minYCorner= getMin(topRightCornerY,newWidth,minYCorner); 
+
+
+         int bottomLeftCornerX= round((image->getHeight()-1)*cos(rads) - about_x*cos(rads)+about_y*sin(rads)+about_x);
+         minXCorner= getMin(bottomLeftCornerX,newHeight,minXCorner);
+         int bottomLeftCornerY= round((image->getHeight()-1)*sin(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
+         minYCorner= getMin(bottomLeftCornerY,newWidth,minYCorner); 
+         
+         int bottomRightCornerX = round((image->getHeight()-1)*cos(rads)-(image->getWidth()-1)*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x);
+         minXCorner= getMin(bottomRightCornerX,newHeight,minXCorner);
+         int bottomRightCornerY = round((image->getHeight()-1)*sin(rads) + (image->getWidth()-1)*cos(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
+         minYCorner= getMin(bottomRightCornerY,newWidth,minYCorner); 
+        
+      
+                 
+         //int minXcorner = min(bottomLeftCornerX,min(topLeftCornerX,min(topRightCornerX,bottomRightCornerX)));
+         //int minYcorner = min(bottomLeftCornerY,min(topLeftCornerY,min(topRightCornerY,bottomRightCornerY)));
+
+         cout <<minXCorner <<" -- " <<minYCorner <<endl;
         
          cout << newWidth << "X" <<newHeight<<endl;
+         cout << bottomLeftCornerX<<","<<bottomRightCornerX<<","<<topLeftCornerX<<","<<topRightCornerX <<endl;
+         cout << bottomLeftCornerY<<","<<bottomRightCornerY<<","<<topLeftCornerY<<","<<topRightCornerY <<endl;
+
          Image *retImage = new Image(newImageName,image->getImageFormat(),newHeight,newWidth,image->getSize());
          for(int i=0;i< image->getHeight();i++){
              for(int j=0;j<image->getWidth();j++){
-                 int newX= i*cos(rads)-j*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x-rightCornerX;
-                 int newY= i*sin(rads)+j*cos(rads) - about_x*sin(rads)-about_y*cos(rads)+about_y-leftCornerY;
+                 int newX= round(i*cos(rads)-j*sin(rads) - about_x*cos(rads)+about_y*sin(rads)+about_x-minXCorner);
+                 int newY= round(i*sin(rads)+j*cos(rads) - about_x*sin(rads)-about_y*cos(rads)+about_y-minYCorner);
                  
-                 if(newX<minX){
-                    minX= newX;
-                    minXPair= newY;
-                    xi=i;
-                    xj=j;
-                 }
-                 if(newY<minY){
-                    minY= newY;
-                    minYPair= newX;
-                    yi=i;
-                    yj=j;
-                 }
-                if(i==0)
-                 cout << "("<<i <<","<<j << ") becomes (" << newX <<","<<newY<<")"<<endl;
-                // newX= abs(newX);
-                 //newY= abs(newY);
                  unsigned char * rgb =image->getPixel(i,j);
-              
-                 if(newX>=0 && newY>=0 && newX< retImage->getHeight() && newY<retImage->getWidth())
+                
+                 if(newX>=0 && newY>=0 && newX< retImage->getHeight() && newY<retImage->getWidth()){
+                  //cout << "("<<i <<","<<j << ") becomes (" << newX <<","<<newY<<")"<<endl;
                     retImage->setPixel(newX,newY,rgb[0],rgb[1],rgb[2]);
+             }
+                else
+                   cout << "("<< i<<","<< j <<") didn't get mapped -- (" <<newX <<","<<newY<<")"<<endl; 
              
                  delete [] rgb;
              }
          }
-            cout << "MinX (" << xi<<","<<xj<<") gets mapped to ("<< minX<<","<<minXPair<<")"<<endl;
-            cout << "MinY (" << yi<<","<<yj<<") gets mapped to ("<< minYPair<<","<<minY<<")"<<endl;
-            cout << "("<<rightCornerX <<","<<rightCornerY << ") becomes (" <<leftCornerX <<","<<leftCornerY<<")"<<endl;
+         //go through image again to fix noise
+       
+        
+       for(int i=0;i<retImage->getHeight();i++){
+           for(int j=0;j<retImage->getWidth();j++){
+
+           }
+           
+       }
+            
          return retImage;
      }
     Image * rotate(Image *image,double angle ){
-
-        return rotate(image,angle,image->getWidth()/2,image->getHeight()/2);
+        int about_x= image->getWidth()/2;
+        if(about_x%2==0)
+            about_x-=1;
+        int about_y= image->getHeight()/2;
+        if(about_y%2==0)
+            about_y-=1;
+        return rotate(image,angle,about_x,about_y);
 
     }
     

@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
 	*/
 
 	//Rotation
-	Image * rotation= rotate(image,45);
+	Image * rotation= rotate(image,atoi(argv[3]));
 	createFile(rotation);
 	showImage(rotation);
 
