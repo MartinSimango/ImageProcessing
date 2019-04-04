@@ -66,7 +66,9 @@ namespace mycv
         //cout <<c;
         image_array[current_row][current_col].rgb[current_color]=c;
         //cout << image_array[current_row][current_col].rgb[current_color];
-        if(current_color==2)current_col++;
+        if(current_color==2){
+            current_col++;
+        }
         if(current_col==cols){
             current_col=0;
             current_row++;
@@ -91,6 +93,7 @@ namespace mycv
         image_array[row][col].rgb[0]=r;
         image_array[row][col].rgb[1]=g;
         image_array[row][col].rgb[2]=b;
+       
 
     } 
     

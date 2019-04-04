@@ -2,6 +2,8 @@
 
 #include "Image.h"
 #include <cmath>
+#include <opencv4/opencv2/opencv.hpp>
+
 
 namespace mycv{
     
@@ -20,7 +22,7 @@ namespace mycv{
     Image * scaleInterpolation(Image *image,Size * newSize);
 
     //Rotation
-    
+   
     //rotate about middle of picture
     Image * rotate(Image *image,double angle);
 
@@ -29,7 +31,11 @@ namespace mycv{
 
     //Background subtraction
 
-    //  todo
+    void backgroundSubstraction(int);
+
+    void frameDifference(int);
+
+    void runningAverage(int);
 
     //Create an image;
     void createImageFile(Image* im,string filename);//create in image file from Image

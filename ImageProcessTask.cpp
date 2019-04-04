@@ -1,5 +1,4 @@
 #include "MyOpenCV.h"
-#include <opencv4/opencv2/opencv.hpp>
 #include <string>
 
 using namespace mycv;
@@ -10,8 +9,8 @@ void createFile(Image *image);
 int main(int argc, char *argv[]){
      
 	
-	Image *image =  imageRead(argv[1]);
-	showImage(image);
+	//Image *image =  imageRead(argv[1]);
+	//showImage(image);
 	
 	
 	//*********************************GrayScale******************************
@@ -53,14 +52,13 @@ int main(int argc, char *argv[]){
 	*/
 
 	//Rotation
-	Image * rotation= rotate(image,atoi(argv[3]));
+	/*Image * rotation= rotate(image,atoi(argv[3]));
 	createFile(rotation);
 	showImage(rotation);
 
-	
-	
 	cv::waitKey(0);
-	cv::destroyAllWindows();
+	cv::destroyAllWindows();*/
+	backgroundSubstraction(100);
 	
 	
    
