@@ -31,11 +31,11 @@ namespace mycv{
 
     //Background subtraction
 
-    void backgroundSubstraction(int);
+    void backgroundSubstraction(int threshold);
 
-    void frameDifference(int);
+    void frameDifference(int threshold);
 
-    void runningAverage(int);
+    void runningAverage(int threshold,float learningRate=0.05);
 
     //Create an image;
     void createImageFile(Image* im,string filename);//create in image file from Image

@@ -198,17 +198,20 @@ namespace mycv{
       
         Image *retImage = new Image(newImageName,image->getImageFormat(),newHeight,newWidth,image->getSize());
            
-         for(int i=0;i<newHeight;i++){
-             for(int j=0;j< newWidth;j++){
+    
+        for(int i=0;i<newHeight;i++){
+             for(int j=0;j<newWidth;j++){
                  //get the point it maps to on the original image
                 int oldX= round((i+minXCorner)*cos(-rads)-(j+minYCorner)*sin(-rads) - about_x*cos(-rads)+about_y*sin(-rads)+about_x);
                 int oldY= round((i+minXCorner)*sin(-rads)+(j+minYCorner)*cos(-rads) - about_x*sin(-rads)-about_y*cos(-rads)+about_y); 
                 //only set the pixle if it maps to an actual point in the original image
+                
                 if(oldX >=0 && oldX<image->getHeight() && oldY >=0 && oldY<image->getWidth()){
                     unsigned char * rgb =image->getPixel(oldX,oldY);
                     retImage->setPixel(i,j,rgb[0],rgb[1],rgb[2]);
                     delete [] rgb;              
-                }   
+                } 
+         
              }
          }
     
@@ -224,39 +227,135 @@ namespace mycv{
     }
     
     //**********************Background Substraction********************************
-    void substact(cv::Mat image_1, cv::Mat image_2){ //helper function
+    cv::Mat subtractFrame(cv::Mat image_1, cv::Mat image_2, int threshold){ //helper function return image 1 vs image 2
+    unsigned char *input_1 = (unsigned char*)(image_1.data);
+    unsigned char * input_2 = (unsigned char *) (image_2.data);
+    cv::Mat retImage= image_1.clone();
+    int r,g,b;
+    int j,i; 
+    for( j = 0;j < image_1.rows;j++){
+        for( i = 0;i < image_1.cols;i++){
+            //cout << i <<"," <<j <<endl;
 
+            b = abs(input_1[image_1.step * j + (i*3) ] -  input_2[image_2.step *j +i*3]);
+            g = abs(input_1[image_1.step * j + (i*3) + 1] - input_2[image_2.step *j +(i*3)+1]);
+            r = abs(input_1[image_1.step * j + (i*3) + 2] - input_2[image_2.step *j +(i*3)+2]);
+          
+           
+             int sum= 0.3*(int)r+0.59*(int)g+0.11*(int)b; //weighted average
+            if(sum<=threshold){
+                retImage.data[image_1.step *j+i*3] =(unsigned char)0;
+                retImage.data[image_1.step *j+(i*3)+1]=(unsigned char)0;
+                retImage.data[image_1.step *j+(i*3)+2]=(unsigned char)0;
+            }
+            else{
+               retImage.data[image_1.step *j+(i*3)] = (unsigned char)255;
+               retImage.data[image_1.step *j+(i*3)+1]=(unsigned char)255;
+               retImage.data[image_1.step *j+(i*3)+2]=(unsigned char)255; 
+            }
+            }
+        }
+    return retImage;
     }
     void backgroundSubstraction(int threshold){
-
            cv::VideoCapture cap(0);
            if(!cap.isOpened()){
                cerr << "Failed to open camera! "<<endl;
                return;
            } 
 
-          /* cv::Mat edges;
-           cv::namedWindow("edges",1);
+       //    cv::Mat edges;
+         //  cv::namedWindow("edges",1);
+        cv::Mat background; //read first frame
+        cap>>background; //get frame from camera
+       // cv::waitKey(30);
            while(1){
                cv::Mat frame;
                cap>>frame; //get frame from camera
+            
                if(frame.empty()) break;
-               cv::imshow("Example ",frame);
+               frame= subtractFrame(frame,background,threshold);
+               cv::imshow("Background subtraction ",frame);
                if((char) cv::waitKey(30)>=0) break;
+               
 
            }
-            */
+        
            
 
 
     }
 
     void frameDifference(int threshold){
+         cv::VideoCapture cap(0);
+           if(!cap.isOpened()){
+               cerr << "Failed to open camera! "<<endl;
+               return;
+           } 
+
+       
+        cv::Mat prevFrame; //read first frame
+     
+        cap>> prevFrame; //get frame from camera
+       // cv::waitKey(30);
+           while(1){
+               cv::Mat frame;
+               
+               cap>>frame; //get frame from camera
+               if(frame.empty()) break;
+               cv::Mat diff_frame= subtractFrame(frame,prevFrame,threshold);
+               cv::imshow("Frame Differencing ",diff_frame);
+               prevFrame=frame.clone();
+               if((char) cv::waitKey(60)>=0) break;
+               
+
+           } 
+    }
+    cv::Mat createMovingAverageBackground(cv::Mat image_1, cv::Mat image_2,float a){
+
+        unsigned char *input_1 = (unsigned char*)(image_1.data);
+        unsigned char * input_2 = (unsigned char *) (image_2.data);
+        cv::Mat retImage= image_1.clone();
+        for( int j = 0;j < image_1.rows;j++){
+            for( int i = 0;i < image_1.cols;i++){
+                retImage.data[image_1.step *j+(i*3)]  =  a*input_1[image_1.step *j+(i*3)]+ (1-a)*input_2[image_1.step *j+(i*3)]; 
+                retImage.data[image_1.step *j+(i*3)+1]= a*input_1[image_1.step *j+(i*3)+1]+(1-a)*input_2[image_1.step *j+(i*3)+1];
+                retImage.data[image_1.step *j+(i*3)+2]= a*input_1[image_1.step *j+(i*3)+2]+(1-a)*input_2[image_1.step *j+(i*3)+2];
+              
+                }
+            }
+    
+    return retImage; 
 
     }
+    void runningAverage(int threshold,float learningRate){
+         
+         cv::VideoCapture cap(0);
+           if(!cap.isOpened()){
+               cerr << "Failed to open camera! "<<endl;
+               return;
+           } 
 
-    void runningAverage(int threshold){
+       
+        cv::Mat background; //read background
+     
+        cap>> background; //get frame from camera
+        
+       
+       // cv::waitKey(30);
+           while(1){
+               cv::Mat frame;
+               
+               cap>>frame; //get frame from camera
+               if(frame.empty()) break;
+               
+               background= createMovingAverageBackground(frame,background,learningRate);
+               cv::Mat diff_frame=subtractFrame(frame,background,threshold);
+               cv::imshow("Running average ",diff_frame);
+               if((char) cv::waitKey(60)>=0) break;
+               
 
+           } 
     }
     
     

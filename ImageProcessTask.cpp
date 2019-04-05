@@ -9,11 +9,11 @@ void createFile(Image *image);
 int main(int argc, char *argv[]){
      
 	
-	//Image *image =  imageRead(argv[1]);
-	//showImage(image);
+	Image *image =  imageRead(argv[1]);
+	showImage(image);
 	
 	
-	//*********************************GrayScale******************************
+	/*********************************GrayScale******************************
 	/*Image *grayC;
 	//single channel
 	grayC = grayScaleChannel(image,(Channel)(atoi(argv[2])));
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
 
 	
 
-	//*********************************Scaling******************************
+	/*********************************Scaling******************************
 	showImage(image);
 	Image *scale;
 	int w= image->getWidth()*2;
@@ -49,22 +49,19 @@ int main(int argc, char *argv[]){
 	scale = scaleInterpolation(image,new Size(w,h));
     createFile(scale);
 	showImage(scale);	
-	*/
+	
 
 	//Rotation
-	/*Image * rotation= rotate(image,atoi(argv[3]));
+	Image * rotation= rotate(image,atoi(argv[3]));
 	createFile(rotation);
 	showImage(rotation);
 
 	cv::waitKey(0);
 	cv::destroyAllWindows();*/
-	backgroundSubstraction(100);
+	//backgroundSubstraction(atoi(argv[4]));
+	//frameDifference(atoi(argv[4]));
+	runningAverage(atoi(argv[4]));
 	
-	
-   
-	
-        
-
 	
 }
 void createFile(Image *image){
