@@ -60,6 +60,7 @@ while True:
         kernel= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5));
         mask= cv2.filter2D(mask,-1,kernel);
         #_,mask= cv2.threshold(mask,150,255,cv2.THRESH_BINARY)
+        
         ret, track_window=cv2.CamShift(mask,track_window,term_criteria)
         
          #draw the rectangle found by camshift

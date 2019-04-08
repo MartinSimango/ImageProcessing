@@ -22,7 +22,7 @@ def select_ROI(event,x,y,flags,param):
         # Draw rectangle using (ix,iy) and (jx,jy)
 
         cv2.rectangle(frame,(ix,iy),(jx,jy),(255,0,0),2)
-        cv2.imshow('frame',frame);
+        
 
 # Grab the reference to the camera
 cap = cv2.VideoCapture(0)
@@ -90,7 +90,7 @@ while(1):
 
             # To terminate current loop.
             break
-
+                    
     # After ROI computation start tracking
     if track == True:
 
