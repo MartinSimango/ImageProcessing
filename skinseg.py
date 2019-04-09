@@ -1,3 +1,9 @@
+#This script includes modified code:
+# - From opencv docs on face and eye detection using Haar Cascades 
+# - From https://github.com/HarshaVardhan896/Object-Tracking-Camera/blob/master/Tutorials/2.%20Tutorial%20on%20CAMShift%20Algorithm%20and%20How%20to%20use%20it%20using%20OpenCV%20and%20Python%20for%20Object%20Tracking/Code/run.py 
+#   for ROI selection
+
+
 import numpy as np
 import cv2
 
@@ -75,7 +81,7 @@ while True:
         #filter mask more
         kernel= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5));
         mask= cv2.filter2D(mask,-1,kernel);
-       # _,mask= cv2.threshold(mask,15,255,cv2.THRESH_BINARY)
+        #_,mask= cv2.threshold(mask,175,255,cv2.THRESH_BINARY)
         ret, track_window=cv2.CamShift(mask,track_window,term_criteria)
         
          #draw the rectangle found by camshift

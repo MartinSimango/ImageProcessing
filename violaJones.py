@@ -1,3 +1,5 @@
+#This script includes modified code:
+#code modified from opencv docs on face detection using Haar Cascades
 import numpy as np
 import cv2 
 #load two cascades

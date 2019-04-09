@@ -1,3 +1,8 @@
+#   This script includes modified code:
+#- From https://github.com/HarshaVardhan896/Object-Tracking-Camera/blob/master/Tutorials/2.%20Tutorial%20on%20CAMShift%20Algorithm%20and%20How%20to%20use%20it%20using%20OpenCV%20and%20Python%20for%20Object%20Tracking/Code/run.py 
+#   for ROI selection
+# - From YouTuber Pysource (https://www.youtube.com/watch?v=a9KZjQ4e6IA) for Camshift algorithm
+
 import cv2
 import numpy as np
 ix,iy,jx,jy= -1,-1,-1,-1 # invalid coords to begin with
