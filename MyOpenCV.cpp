@@ -158,9 +158,9 @@ namespace mycv{
          //new image size after rotation
          
          //new image dimension
-        int newWidth = round(abs(image->getHeight()*sin(rads))+abs(image->getWidth()*cos(rads)));
-        int newHeight = round(abs(image->getWidth()*sin(rads))+ abs(image->getHeight()*cos(rads)));
-         string newImageName = "Rotate("+to_string(angle)+","+to_string(newWidth)+","+to_string(newHeight)+")" + image->getImageName();
+        int newWidth = ceil(abs(image->getHeight()*sin(rads))+abs(image->getWidth()*cos(rads)));
+        int newHeight = ceil(abs(image->getWidth()*sin(rads))+ abs(image->getHeight()*cos(rads)));
+         string newImageName = "Rotate("+to_string(angle)+")" + image->getImageName();
 
          //The rotation matrix
          // [ cos(𝜃) -sin(𝜃) (-𝑥⋅cos(𝜃) +𝑦⋅sin(𝜃)+𝑥)] 
@@ -172,57 +172,78 @@ namespace mycv{
          int minYCorner=0;
 
          //top left corner
-         int topLeftCornerX= round(-about_x*cos(rads)+about_y*sin(rads)+about_x);
+         int topLeftCornerX= ceil(-about_x*cos(rads)+about_y*sin(rads)+about_x);
          minXCorner= getMin(topLeftCornerX,newHeight,minXCorner);
-         int topLeftCornerY= round(-about_x*sin(rads)-about_y*cos(rads)+about_y);
+         int topLeftCornerY= ceil(-about_x*sin(rads)-about_y*cos(rads)+about_y);
          minYCorner= getMin(topLeftCornerY,newWidth,minYCorner); 
          
          //top right corner
-         int topRightCornerX = round(-(image->getWidth()-1)*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x);
+         int topRightCornerX = ceil(-(image->getWidth()-1)*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x);
          minXCorner= getMin(topRightCornerX,newHeight,minXCorner);
-         int topRightCornerY =  round((image->getWidth()-1)*cos(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
+         int topRightCornerY =  ceil((image->getWidth()-1)*cos(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
          minYCorner= getMin(topRightCornerY,newWidth,minYCorner); 
 
          //bottom left corner
-         int bottomLeftCornerX= round((image->getHeight()-1)*cos(rads) - about_x*cos(rads)+about_y*sin(rads)+about_x);
+         int bottomLeftCornerX= ceil((image->getHeight()-1)*cos(rads) - about_x*cos(rads)+about_y*sin(rads)+about_x);
          minXCorner= getMin(bottomLeftCornerX,newHeight,minXCorner);
-         int bottomLeftCornerY= round((image->getHeight()-1)*sin(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
+         int bottomLeftCornerY= ceil((image->getHeight()-1)*sin(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
          minYCorner= getMin(bottomLeftCornerY,newWidth,minYCorner); 
          
          //bottom right corner
-         int bottomRightCornerX = round((image->getHeight()-1)*cos(rads)-(image->getWidth()-1)*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x);
+         int bottomRightCornerX = ceil((image->getHeight()-1)*cos(rads)-(image->getWidth()-1)*sin(rads)- about_x*cos(rads)+about_y*sin(rads)+about_x);
          minXCorner= getMin(bottomRightCornerX,newHeight,minXCorner);
-         int bottomRightCornerY = round((image->getHeight()-1)*sin(rads) + (image->getWidth()-1)*cos(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
+         int bottomRightCornerY = ceil((image->getHeight()-1)*sin(rads) + (image->getWidth()-1)*cos(rads)- about_x*sin(rads)-about_y*cos(rads)+about_y);
          minYCorner= getMin(bottomRightCornerY,newWidth,minYCorner); 
         
       
         Image *retImage = new Image(newImageName,image->getImageFormat(),newHeight,newWidth,image->getSize());
            
-    
-        for(int i=0;i<newHeight;i++){
+         
+        
+  
+       for(int i=0;i<newHeight;i++){
              for(int j=0;j<newWidth;j++){
                  //get the point it maps to on the original image
-                int oldX= round((i+minXCorner)*cos(-rads)-(j+minYCorner)*sin(-rads) - about_x*cos(-rads)+about_y*sin(-rads)+about_x);
-                int oldY= round((i+minXCorner)*sin(-rads)+(j+minYCorner)*cos(-rads) - about_x*sin(-rads)-about_y*cos(-rads)+about_y); 
-                //only set the pixle if it maps to an actual point in the original image
-                
+                int oldX= ceil((i+minXCorner)*cos(-rads)-(j+minYCorner)*sin(-rads) - about_x*cos(-rads)+about_y*sin(-rads)+about_x);
+                int oldY= ceil((i+minXCorner)*sin(-rads)+(j+minYCorner)*cos(-rads) - about_x*sin(-rads)-about_y*cos(-rads)+about_y); 
+                //only set the pixel if it maps to an actual point in the original image
+               
                 if(oldX >=0 && oldX<image->getHeight() && oldY >=0 && oldY<image->getWidth()){
                     unsigned char * rgb =image->getPixel(oldX,oldY);
-                    retImage->setPixel(i,j,rgb[0],rgb[1],rgb[2]);
-                    delete [] rgb;              
-                } 
-         
+                    retImage->setPixel(i,j,rgb[0],rgb[1],rgb[2]); 
+                    delete [] rgb;
              }
+          
          }
+       }
+         //smoothing edges
+        
     
-            
          return retImage;
      }
     Image * rotate(Image *image,double angle ){
-        int about_x= round(image->getHeight()/2.0);
-        int about_y= round(image->getWidth()/2.0);
-      
-        return rotate(image,angle,about_x,about_y);
+        int scaleFactor=5;
+        double scaleWidth=image->getWidth()*scaleFactor;
+        double scaleHeight=image->getHeight()*scaleFactor;
+        int about_x= round(scaleHeight/2.0);
+        int about_y= round(scaleWidth/2.0);
+        if(angle== ceil(angle) && int(abs(angle))%90==0)
+            return rotate(image,angle,round(image->getWidth()/2),round(image->getHeight()/2));
+        //small pictures aren't good for rotation cause of straight lines
+       // therefore make image bigger than scale back done
+        Image * retImage= scaleInterpolation(image,new Size(scaleWidth,scaleHeight));
+        //work out scale facters
+        double widthSF=scaleWidth/image->getWidth();
+        double heightSF=scaleHeight/ image->getHeight();
+        //rotate scaled image
+        retImage->setImageName(image->getImageName());
+        retImage= rotate(retImage,angle,about_x,about_y);
+        //scale back down
+        string name= retImage->getImageName();
+        retImage =scaleInterpolation(retImage,new Size(retImage->getWidth()/scaleFactor,retImage->getHeight()/scaleFactor));
+        retImage->setImageName(name); 
+        return retImage;
+       
 
     }
     

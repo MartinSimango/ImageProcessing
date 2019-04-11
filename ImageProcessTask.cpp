@@ -10,7 +10,7 @@ int main(int argc, char *argv[]){
      
 	
 	Image *image =  imageRead(argv[1]);
-	showImage(image);
+ 	showImage(image);
 	
 	
 	/*********************************GrayScale******************************
@@ -36,31 +36,31 @@ int main(int argc, char *argv[]){
 
 	/*********************************Scaling******************************
 	showImage(image);
-	Image *scale;
-	int w= image->getWidth()*2;
-	int h= image->getHeight()*2;
+ Image *scale;
+	int w= image->getWidth()*5;
+	int h= image->getHeight()*5;
 	//nearest neighbour
 	
  	scale= scaleNearestNeighbour(image, new Size(w,h));
-	createFile(scale);
-	showImage(scale);	
+   //createFile(scale);
+//	showImage(scale);	
 	
 	//scaling interpolation 
-	scale = scaleInterpolation(image,new Size(w,h));
+	/*scale = scaleInterpolation(image,new Size(w,h));
     createFile(scale);
-	showImage(scale);	
+	showImage(scale);*/
 	
 
-	//Rotation
-	Image * rotation= rotate(image,atoi(argv[3]));
+	//Rotation*/
+	Image * rotation= rotate(image,atof(argv[3]));
 	createFile(rotation);
 	showImage(rotation);
 
 	cv::waitKey(0);
-	cv::destroyAllWindows();*/
+	cv::destroyAllWindows();
 	//backgroundSubstraction(atoi(argv[4]));
 	//frameDifference(atoi(argv[4]));
-	runningAverage(atoi(argv[4]));
+	//runningAverage(atoi(argv[4]));
 	
 	
 }
