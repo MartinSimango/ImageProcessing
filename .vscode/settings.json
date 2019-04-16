@@ -16,7 +16,11 @@
         "vector": "cpp",
         "string": "cpp",
         "__locale": "cpp",
-        "__string": "cpp"
+        "__string": "cpp",
+        "chrono": "cpp",
+        "cmath": "cpp",
+        "__bit_reference": "cpp",
+        "algorithm": "cpp"
     },
     "python.linting.pylintEnabled": true
 }

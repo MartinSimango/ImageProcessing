@@ -4,7 +4,7 @@ import random as rand
 import sys
 #define combinations
 
-img=cv2.imread("chess.png",0) #read in the picture as a gray scale
+img=cv2.imread(sys.argv[1],0) #read in the picture as a gray scale
 
 #apply threshhold to image
 _,mono= cv2.threshold(img,100,255,cv2.THRESH_BINARY)
@@ -47,20 +47,20 @@ for i in range(height):
             #set the next four pixels of the two new images
             for row in range(2):
                 for col in range(2):
-                    mono_pic_1[(2*i)+row][(2*j)+col]= WPixels[pair][row*2+col] #white=0 and black=1 so need to swap meaning of 255 and 0 around
-                    mono_pic_2[(2*i)+row][(2*j)+col] = WPixels[pair][row*2+col]
+                    mono_pic_1[(2*i)+row][(2*j)+col]= BPixels[pair][row*2+col] #white=0 and black=1 so need to swap meaning of 255 and 0 around
+                    mono_pic_2[(2*i)+row][(2*j)+col] = BPair_Pixels[pair][row*2+col]
         else:  #pixel is white
             for row in range(2):
                 for col in range(2):
-                    mono_pic_1[(2*i)+row][(2*j)+col]= BPixels[pair][row*2+col]
-                    mono_pic_2[(2*i)+row][(2*j)+col] = BPair_Pixels[pair][row*2+col]
+                    mono_pic_1[(2*i)+row][(2*j)+col]= WPixels[pair][row*2+col]
+                    mono_pic_2[(2*i)+row][(2*j)+col] = WPixels[pair][row*2+col]
 
-cv2.imshow('mono',mono)
+cv2.imshow('Original',mono)
 
 #cv2.imshow('mono_1', mono_pic_1)
 #cv2.imshow('mono_2',mono_pic_2)
-cv2.imwrite("chess_1.png",mono_pic_1)
-cv2.imwrite("chess_2.png",mono_pic_2)
+cv2.imwrite("mono_1_"+sys.argv[1],mono_pic_1)
+cv2.imwrite("mono_2_"+sys.argv[1],mono_pic_2)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
